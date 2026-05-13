@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capital Advance ROI 시뮬레이션 | Payoneer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #F9FAFB;
+            color: #111827;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 0;
+        }
+        
+        .logo {
+            margin-bottom: 30px;
+        }
+        
+        .logo img {
+            height: 50px;
+        }
+        
+        h1 {
+            font-size: 36px;
+            color: #111827;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            font-size: 21px;
+            color: #6B7280;
+            font-weight: 400;
+        }
+        
+        .calculator-wrapper {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        
+        .input-section {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        .edit-icon {
+            font-size: 14px;
+            color: #9CA3AF;
+        }
+        
+        .helper-text {
+            font-size: 12px;
+            color: #9CA3AF;
+            margin-top: 6px;
+        }
+        
+        .helper-text.error {
+            color: #EF4444;
+            font-weight: 600;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 14px 12px 36px;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #111827;
+            background: #FAFAFA;
+            cursor: text;
+        }
+        
+        .input-wrapper input.error {
+            border-color: #EF4444;
+            background: #FEF2F2;
+        }
+        
+        .input-wrapper input:hover {
+            border-color: #3B82F6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.05);
+            transform: translateY(-1px);
+        }
+        
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #3B82F6;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+            transform: translateY(-1px);
+        }
+        
+        .input-wrapper input.error:hover,
+        .input-wrapper input.error:focus {
+            border-color: #EF4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+            }
+        }
+        
+        .input-wrapper.first-input input {
+            animation: pulse 2s ease-in-out 3;
+        }
+        
+        .currency {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            font-weight: 500;
+            font-size: 15px;
+            pointer-events: none;
+        }
+        
+        .input-wrapper input::placeholder {
+            color: #9CA3AF;
+            font-style: italic;
+        }
+        
+        .plan-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .plan-label {
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        .plans {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .plan-card {
+            border: 1.5px solid #E5E7EB;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #FAFAFA;
+        }
+        
+        .plan-card:hover {
+            border-color: #3B82F6;
+            background: white;
+            transform: translateY(-2px);
+        }
+        
+        .plan-card.selected {
+            border-color: #3B82F6;
+            background: #EFF6FF;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .plan-name {
+            color: #111827;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        
+        .plan-period {
+            color: #6B7280;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .plan-fee {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        
+        .plan-details {
+            font-size: 11px;
+            color: #6B7280;
+        }
+        
+        .results {
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        
+        .results.active {
+            opacity: 1;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+        }
+        
+        .highlight-title {
+            font-size: 20px;
+            margin-bottom: 16px;
+            opacity: 0.95;
+            font-weight: 600;
+        }
+        
+        .highlight-value {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        
+        .highlight-roi {
+            font-size: 22px;
+            font-weight: 700;
+            opacity: 1;
+            padding-top: 24px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+            line-height: 1.5;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .scenario {
+            padding: 28px;
+            border-radius: 12px;
+            background: #FAFAFA;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .scenario::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .before::before {
+            background: #EF4444;
+        }
+        
+        .after::before {
+            background: #10B981;
+        }
+        
+        .scenario-label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        
+        .before .scenario-label {
+            color: #EF4444;
+        }
+        
+        .after .scenario-label {
+            color: #10B981;
+        }
+        
+        .metric {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .metric-label {
+            font-size: 13px;
+            color: #6B7280;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        
+        .metric-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .metric-change {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 4px;
+            min-height: 20px;
+        }
+        
+        .metric-change.hidden {
+            visibility: hidden;
+        }
+        
+        .metric.empty {
+            visibility: hidden;
+        }
+        
+        .metric.final {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 2px solid #E5E7EB;
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .metric.final .metric-label {
+            font-weight: 600;
+            color: #111827;
+            font-size: 14px;
+        }
+        
+        .key-insights {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .insights-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+        
+        .insight-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 14px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .insight-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .insight-icon {
+            width: 20px;
+            height: 20px;
+            background: #3B82F6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            margin-right: 10px;
+            flex-shrink: 0;
+            font-size: 12px;
+        }
+        
+        .insight-text {
+            color: #4B5563;
+        }
+        
+        .insight-text strong {
+            color: #111827;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 1024px) {
+            .calculator-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-section {
+                position: static;
+            }
+            
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+/* 상환 프로세스 스타일 */
+        .repayment-section {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            margin-top: 50px;
+        }
+        
+        .repayment-section.active {
+            opacity: 1;
+        }
+        
+        .repayment-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+        
+        .repayment-subtitle {
+            font-size: 15px;
+            color: #6B7280;
+            margin-bottom: 35px;
+        }
+        
+        .progress-overview {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 35px;
+            border: 1px solid #BAE6FD;
+        }
+        
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .progress-stat {
+            text-align: center;
+        }
+        
+        .progress-stat-label {
+            font-size: 13px;
+            color: #0369A1;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .progress-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0C4A6E;
+        }
+        
+        .progress-bar-container {
+            background: white;
+            border-radius: 8px;
+            height: 14px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3B82F6 0%, #10B981 100%);
+            border-radius: 8px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .timeline {
+            display: flex;
+            gap: 18px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scroll-behavior: smooth;
+        }
+        
+        .timeline::-webkit-scrollbar {
+            height: 10px;
+        }
+        
+        .timeline::-webkit-scrollbar-track {
+            background: #F3F4F6;
+            border-radius: 5px;
+        }
+        
+        .timeline::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 5px;
+        }
+        
+        .timeline::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF;
+        }
+        
+        .timeline-item {
+            min-width: 220px;
+            background: #FAFAFA;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+            border-color: #3B82F6;
+        }
+        
+        .timeline-item.start {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border-color: #10B981;
+        }
+        
+        .timeline-item.complete {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            border-color: #3B82F6;
+        }
+        
+        .timeline-item::after {
+            content: '→';
+            position: absolute;
+            right: -28px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 26px;
+            color: #D1D5DB;
+            font-weight: 700;
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        .week-badge {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        
+        .timeline-item.start .week-badge,
+        .timeline-item.complete .week-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .timeline-amount {
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .timeline-item.start .timeline-amount,
+        .timeline-item.complete .timeline-amount {
+            color: white;
+        }
+        
+        .timeline-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 14px;
+        }
+        
+        .timeline-item.start .timeline-value,
+        .timeline-item.complete .timeline-value {
+            color: white;
+        }
+        
+        .timeline-details {
+            font-size: 13px;
+            padding-top: 14px;
+            border-top: 1px solid #E5E7EB;
+        }
+        
+        .timeline-item.start .timeline-details,
+        .timeline-item.complete .timeline-details {
+            border-top-color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            color: #6B7280;
+        }
+        
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        .timeline-item.start .detail-value,
+        .timeline-item.complete .detail-value {
+            color: white;
+        }
+        
+        .repayment-complete-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="./payoneer-logo.png" alt="Payoneer" onerror="this.style.display='none'">
+            </div>
+            <h1>Capital Advance ROI 시뮬레이션</h1>
+            <p class="subtitle">비즈니스 성장 기회를 실시간으로 확인해보세요!</p>
+        </div>
+        
+        <div class="calculator-wrapper">
+            <div class="input-section">
+                <h2 class="section-title">비즈니스 정보</h2>
+                
+                <div class="plan-section">
+                    <div class="plan-label">상환 플랜</div>
+                    <div class="plans">
+                        <div class="plan-card" data-plan="express">
+                            <div class="plan-name">Express</div>
+                            <div class="plan-period">1개월</div>
+                            <div class="plan-fee">1.5%</div>
+                            <div class="plan-details">상환 50%</div>
+                        </div>
+                        <div class="plan-card selected" data-plan="grow">
+                            <div class="plan-name">Grow</div>
+                            <div class="plan-period">3개월</div>
+                            <div class="plan-fee">4.0%</div>
+                            <div class="plan-details">상환 35%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>
+                        <span>월 아마존 매출 (USD)</span>
+                        <span class="edit-icon">✏️</span>
+                    </label>
+                    <div class="input-wrapper first-input">
+                        <span class="currency">$</span>
+                        <input type="text" id="settlement" value="50,000">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>
+                        <span>마진율 (%)</span>
+                        <span class="edit-icon">✏️</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <span class="currency">%</span>
+                        <input type="number" id="margin" value="30">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>
+                        <span>Capital Advance (USD)</span>
+                        <span class="edit-icon">✏️</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <span class="currency">$</span>
+                        <input type="text" id="advance" value="30,000">
+                    </div>
+                    <div class="helper-text" id="advanceHelper">Grow (3개월)은 월 아마존 매출의 100%까지 입력 가능</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>
+                        <span>Capital Advance 투자 대비 매출 전환율 (%)</span>
+                        <span class="edit-icon">✏️</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <span class="currency">%</span>
+                        <input type="number" id="conversionRate" value="120">
+                    </div>
+                    <div class="helper-text">예: 120% = $100 투자 시 $120 매출 발생</div>
+                </div>
+            </div>
+            
+            <div class="results" id="results">
+                <div class="highlight-box">
+                    <div class="highlight-title" id="highlightTitle">Capital Advance 사용 시 예상 순이익 (3개월)</div>
+                    <div class="highlight-value" id="totalBenefit">$0</div>
+                    <div class="highlight-roi" id="roiText">-</div>
+                </div>
+                
+                <div class="comparison">
+                    <div class="scenario before">
+                        <div class="scenario-label">Without Capital Advance</div>
+                        
+                        <div class="metric">
+                            <div class="metric-label" id="beforeSalesLabel">매출</div>
+                            <div class="metric-value" id="beforeSales">$0</div>
+                        </div>
+                        
+                        <div class="metric">
+                            <div class="metric-label" id="beforeProfitLabel">순이익</div>
+                            <div class="metric-value" id="beforeProfit">$0</div>
+                        </div>
+                        
+                        <div class="metric empty">
+                            <div class="metric-label">-</div>
+                            <div class="metric-value">-</div>
+                        </div>
+                        
+                        <div class="metric final">
+                            <div class="metric-label">최종 순이익</div>
+                            <div class="metric-value" id="beforeNet">$0</div>
+                            <div class="metric-change hidden">-</div>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario after">
+                        <div class="scenario-label">With Capital Advance</div>
+                        
+                        <div class="metric">
+                            <div class="metric-label" id="afterSalesLabel">매출</div>
+                            <div class="metric-value" id="afterSales">$0</div>
+                        </div>
+                        
+                        <div class="metric">
+                            <div class="metric-label" id="afterProfitLabel">순이익</div>
+                            <div class="metric-value" id="afterProfit">$0</div>
+                        </div>
+                        
+                        <div class="metric">
+                            <div class="metric-label">수수료</div>
+                            <div class="metric-value" id="afterFee">$0</div>
+                        </div>
+                        
+                        <div class="metric final">
+                            <div class="metric-label">최종 순이익</div>
+                            <div class="metric-value" style="color: #10B981;" id="afterNet">$0</div>
+                            <div class="metric-change" style="color: #10B981;" id="afterNetPercent">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="key-insights">
+                    <h3 class="insights-title">핵심 인사이트</h3>
+                    <div id="insights"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<!-- 상환 프로세스 별도 섹션 -->
+                <div class="repayment-section" id="repaymentSection">
+                    <h3 class="repayment-title">📊 상환 프로세스 시뮬레이션</h3>
+                    <p class="repayment-subtitle">정산금의 <strong id="repaymentRate">35%</strong>가 자동으로 상환됩니다</p>
+                    
+                    <div class="progress-overview">
+                        <div class="progress-stats">
+                            <div class="progress-stat">
+                                <div class="progress-stat-label">총 상환 금액</div>
+                                <div class="progress-stat-value" id="totalRepayment">$0</div>
+                            </div>
+                            <div class="progress-stat">
+                                <div class="progress-stat-label">예상 완료 시점</div>
+                                <div class="progress-stat-value" id="completionWeek">-</div>
+                            </div>
+                            <div class="progress-stat">
+                                <div class="progress-stat-label">주간 평균 상환</div>
+                                <div class="progress-stat-value" id="avgWeeklyRepayment">$0</div>
+                            </div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="overallProgress"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline" id="timeline"></div>
+                </div>
+
+    <script>
+        let selectedPlan = 'grow';
+        const fees = {
+            express: 1.5,
+            grow: 4.0
+        };
+        const periods = {
+            express: 1,
+            grow: 3
+        };
+        const maxAdvanceRatio = {
+            express: 0.5,
+            grow: 1.0
+        };
+        
+const repaymentRates = {
+            express: 0.5,
+            grow: 0.35
+        };
+        
+        function calculateRepaymentTimeline() {
+            const settlement = parseNumber(document.getElementById('settlement').value);
+            const advance = parseNumber(document.getElementById('advance').value);
+            const repaymentRate = repaymentRates[selectedPlan];
+            
+            const totalToRepay = advance * (1 + fees[selectedPlan] / 100);
+            const planMonths = periods[selectedPlan];
+            
+            // 주간 정산금 (월 매출 ÷ 4주)
+            const weeklySettlement = settlement / 4;
+            // 주간 상환액 (주간 정산금 × 상환율)
+            const weeklyRepayment = weeklySettlement * repaymentRate;
+            
+            let timeline = [];
+            let totalRepaid = 0;
+            let weekCounter = 0;
+            
+            // 시작 카드
+            timeline.push({
+                type: 'start',
+                week: 0,
+                month: 0,
+                advance: advance,
+                totalToRepay: totalToRepay
+            });
+            
+            // 각 월별 상환 계산
+            for (let month = 1; month <= planMonths; month++) {
+                for (let week = 1; week <= 4; week++) {
+                    if (totalRepaid >= totalToRepay) break;
+                    
+                    weekCounter++;
+                    
+                    // 남은 상환액보다 주간 상환액이 크면 남은 금액만 상환
+                    const remainingAmount = totalToRepay - totalRepaid;
+                    const actualRepayment = Math.min(weeklyRepayment, remainingAmount);
+                    const receiveAmount = weeklySettlement - actualRepayment;
+                    
+                    totalRepaid += actualRepayment;
+                    
+                    timeline.push({
+                        type: 'weekly',
+                        week: weekCounter,
+                        month: month,
+                        weekInMonth: week,
+                        settlement: weeklySettlement,
+                        repayment: actualRepayment,
+                        receive: receiveAmount,
+                        totalRepaid: totalRepaid,
+                        remaining: totalToRepay - totalRepaid,
+                        progress: (totalRepaid / totalToRepay) * 100
+                    });
+                    
+                    if (totalRepaid >= totalToRepay) break;
+                }
+                
+                if (totalRepaid >= totalToRepay) break;
+            }
+            
+            // 완료 카드
+            timeline.push({
+                type: 'complete',
+                week: weekCounter,
+                totalRepaid: totalRepaid,
+                totalToRepay: totalToRepay
+            });
+            
+            return timeline;
+        }
+        
+        function renderRepaymentTimeline() {
+            const timeline = calculateRepaymentTimeline();
+            const timelineContainer = document.getElementById('timeline');
+            const advance = parseNumber(document.getElementById('advance').value);
+            const totalToRepay = advance * (1 + fees[selectedPlan] / 100);
+            const repaymentRate = repaymentRates[selectedPlan];
+            
+            document.getElementById('repaymentSection').classList.add('active');
+            
+            document.getElementById('repaymentRate').textContent = 
+                (repaymentRate * 100) + '%';
+            document.getElementById('totalRepayment').textContent = 
+                '$' + formatNumber(totalToRepay);
+            
+            const weeklyItems = timeline.filter(t => t.type === 'weekly');
+            if (weeklyItems.length > 0) {
+                const completionWeek = weeklyItems[weeklyItems.length - 1].week;
+                const completionMonth = Math.ceil(completionWeek / 4);
+                document.getElementById('completionWeek').textContent = 
+                    `약 ${completionWeek}주`;
+                
+                const avgRepayment = totalToRepay / completionWeek;
+                document.getElementById('avgWeeklyRepayment').textContent = 
+                    '$' + formatNumber(avgRepayment);
+                
+                const finalProgress = 100;
+                document.getElementById('overallProgress').style.width = finalProgress + '%';
+            }
+            
+            let html = '';
+            
+            timeline.forEach((item, index) => {
+                if (item.type === 'start') {
+                    html += `
+                        <div class="timeline-item start">
+                            <div class="week-badge">📅 시작</div>
+                            <div class="timeline-amount">Capital Advance 수령</div>
+                            <div class="timeline-value">$${formatNumber(item.advance)}</div>
+                            <div class="timeline-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">총 상환 예정액</span>
+                                    <span class="detail-value">$${formatNumber(item.totalToRepay)}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">수수료 (${fees[selectedPlan]}%)</span>
+                                    <span class="detail-value">$${formatNumber(item.totalToRepay - item.advance)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (item.type === 'weekly') {
+                    html += `
+                        <div class="timeline-item">
+                            <div class="week-badge">${item.month}개월 ${item.weekInMonth}주차</div>
+                            <div class="timeline-amount">아마존 정산금</div>
+                            <div class="timeline-value">$${formatNumber(item.settlement)}</div>
+                            <div class="timeline-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">상환 (${repaymentRate * 100}%)</span>
+                                    <span class="detail-value" style="color: #EF4444;">-$${formatNumber(item.repayment)}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">실수령액</span>
+                                    <span class="detail-value" style="color: #10B981;">$${formatNumber(item.receive)}</span>
+                                </div>
+                                <div class="detail-row" style="padding-top: 8px; margin-top: 8px; border-top: 1px solid #E5E7EB;">
+                                    <span class="detail-label">누적 상환</span>
+                                    <span class="detail-value">$${formatNumber(item.totalRepaid)}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">잔여 상환액</span>
+                                    <span class="detail-value">$${formatNumber(item.remaining)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (item.type === 'complete') {
+                    html += `
+                        <div class="timeline-item complete">
+                            <div class="repayment-complete-badge">
+                                <span>✅</span>
+                                <span>상환 완료!</span>
+                            </div>
+                            <div class="timeline-amount">${item.week}주 만에 완료</div>
+                            <div class="timeline-value">$${formatNumber(item.totalRepaid)}</div>
+                            <div class="timeline-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">상환 완료율</span>
+                                    <span class="detail-value">100%</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">다음 정산부터</span>
+                                    <span class="detail-value">100% 수령</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            timelineContainer.innerHTML = html;
+        }
+
+        function formatNumber(num) {
+            return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        function parseNumber(str) {
+            if (typeof str === 'number') return str;
+            const cleaned = String(str).replace(/,/g, '');
+            return parseFloat(cleaned) || 0;
+        }
+        
+        function updateAdvanceLimit() {
+            const settlement = parseNumber(document.getElementById('settlement').value);
+            const maxAdvance = settlement * maxAdvanceRatio[selectedPlan];
+            const planName = selectedPlan === 'express' ? 'Express (1개월)' : 'Grow (3개월)';
+            const percentage = selectedPlan === 'express' ? '50%' : '100%';
+            const helperText = `${planName}은 월 아마존 매출의 ${percentage}까지 입력 가능`;
+            
+            const helperElement = document.getElementById('advanceHelper');
+            const advanceInput = document.getElementById('advance');
+            const currentAdvance = parseNumber(advanceInput.value);
+            
+            if (currentAdvance > maxAdvance) {
+                helperElement.textContent = `⚠️ 최대 $${formatNumber(maxAdvance)}까지 입력 가능합니다`;
+                helperElement.classList.add('error');
+                advanceInput.classList.add('error');
+            } else {
+                helperElement.textContent = helperText;
+                helperElement.classList.remove('error');
+                advanceInput.classList.remove('error');
+            }
+        }
+        
+        function calculate() {
+            try {
+                const settlement = parseNumber(document.getElementById('settlement').value);
+                const margin = parseFloat(document.getElementById('margin').value) / 100;
+                let advance = parseNumber(document.getElementById('advance').value);
+                const conversionRate = parseFloat(document.getElementById('conversionRate').value) / 100;
+                
+                if (!settlement || !margin || !advance || !conversionRate) {
+                    return;
+                }
+                
+                const maxAdvance = settlement * maxAdvanceRatio[selectedPlan];
+                if (advance > maxAdvance) {
+                    return;
+                }
+                
+                document.getElementById('results').classList.add('active');
+                
+                const planMonths = periods[selectedPlan];
+                
+                const additionalSales = advance * conversionRate;
+                const monthlySalesWithoutCA = settlement;
+                const monthlyProfitWithoutCA = monthlySalesWithoutCA * margin;
+                const monthlySalesWithCA = settlement + additionalSales;
+                const monthlyProfitWithCA = monthlySalesWithCA * margin;
+                const caFee = advance * (fees[selectedPlan] / 100);
+                
+                const totalSalesWithoutCA = monthlySalesWithoutCA * planMonths;
+                const totalProfitWithoutCA = monthlyProfitWithoutCA * planMonths;
+                const totalSalesWithCA = monthlySalesWithCA * planMonths;
+                const totalProfitWithCA = monthlyProfitWithCA * planMonths;
+                const totalNetProfitWithCA = totalProfitWithCA - caFee;
+                
+                const additionalBenefit = totalNetProfitWithCA - totalProfitWithoutCA;
+                const benefitPercent = ((additionalBenefit / totalProfitWithoutCA) * 100).toFixed(1);
+                const roi = ((additionalBenefit / caFee) * 100);
+                const roiFormatted = roi >= 1000 ? formatNumber(Math.round(roi)) : Math.round(roi);
+                
+                const periodLabel = planMonths === 1 ? '1개월' : planMonths + '개월';
+                
+                document.getElementById('highlightTitle').textContent = `Capital Advance 사용 시 예상 순이익 (${periodLabel})`;
+                document.getElementById('beforeSalesLabel').textContent = periodLabel + ' 매출';
+                document.getElementById('beforeProfitLabel').textContent = periodLabel + ' 순이익';
+                document.getElementById('afterSalesLabel').textContent = periodLabel + ' 매출';
+                document.getElementById('afterProfitLabel').textContent = periodLabel + ' 순이익';
+                
+                document.getElementById('beforeSales').textContent = '$' + formatNumber(totalSalesWithoutCA);
+                document.getElementById('beforeProfit').textContent = '$' + formatNumber(totalProfitWithoutCA);
+                document.getElementById('beforeNet').textContent = '$' + formatNumber(totalProfitWithoutCA);
+                
+                document.getElementById('afterSales').textContent = '$' + formatNumber(totalSalesWithCA);
+                document.getElementById('afterProfit').textContent = '$' + formatNumber(totalProfitWithCA);
+                document.getElementById('afterFee').textContent = '-$' + formatNumber(caFee);
+                document.getElementById('afterNet').textContent = '$' + formatNumber(totalNetProfitWithCA);
+                document.getElementById('afterNetPercent').textContent = '+' + benefitPercent + '% 상승';
+                
+                document.getElementById('totalBenefit').textContent = '$' + formatNumber(additionalBenefit);
+                document.getElementById('roiText').textContent = '$' + formatNumber(caFee) + '의 수수료로 $' + formatNumber(additionalBenefit) + '의 추가 이익 예상! (ROI: ' + roiFormatted + '%)';
+                
+                const totalAdditionalSales = additionalSales * planMonths;
+                const insightsHTML = `
+                    <div class="insight-item">
+                        <div class="insight-icon">✓</div>
+                        <div class="insight-text">
+                            <strong>투자 효과:</strong> $${formatNumber(advance)}를 투자하면 ${periodLabel} 동안 약 $${formatNumber(totalAdditionalSales)}의 추가 매출이 발생할 수 있습니다.
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">✓</div>
+                        <div class="insight-text">
+                            <strong>성장 기회:</strong> 재고 부족이나 마케팅 기회를 놓치지 않고 비즈니스를 확장할 수 있습니다.
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon">✓</div>
+                        <div class="insight-text">
+                            <strong>분할 상환:</strong> ${periodLabel} 동안 정산금에서 자동 상환되어 현금 흐름 관리가 쉽습니다.
+                        </div>
+                    </div>
+                `;
+                document.getElementById('insights').innerHTML = insightsHTML;
+                
+// 상환 타임라인 렌더링
+                renderRepaymentTimeline();
+
+            } catch (error) {
+                console.error('계산 오류:', error);
+            }
+        }
+        
+        function handleNumberInput(e) {
+            let value = e.target.value.replace(/,/g, '');
+            if (value === '') {
+                e.target.value = '';
+                return;
+            }
+            let num = parseInt(value);
+            if (!isNaN(num)) {
+                e.target.value = formatNumber(num);
+            }
+            updateAdvanceLimit();
+            calculate();
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.plan-card').forEach(plan => {
+                plan.addEventListener('click', function() {
+                    document.querySelectorAll('.plan-card').forEach(p => p.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedPlan = this.dataset.plan;
+                    updateAdvanceLimit();
+                    calculate();
+                });
+            });
+            
+            document.getElementById('settlement').addEventListener('input', handleNumberInput);
+            document.getElementById('advance').addEventListener('input', handleNumberInput);
+            document.getElementById('margin').addEventListener('input', calculate);
+            document.getElementById('conversionRate').addEventListener('input', calculate);
+            
+            updateAdvanceLimit();
+            calculate();
+        });
+    </script>
+</body>
+
+
+
+</html>
